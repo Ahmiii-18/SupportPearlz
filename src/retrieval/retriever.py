@@ -5,7 +5,6 @@ from src.utils.logging_setup import logger
 VECTOR_STORE_DIR = "data/vector_store"
 COLLECTION_NAME = "supportpearlz_docs"
 
-
 class GatedRetriever:
     def __init__(self, score_threshold: float = 0.35, k: int = 3):
         self.score_threshold = score_threshold
@@ -19,6 +18,10 @@ class GatedRetriever:
         )
 
     def invoke(self, query: str):
+        return self.get_relevant_documents(query)
+
+    def retrieve(self, query: str):
+        """Alias method to support calls expecting .retrieve()"""
         return self.get_relevant_documents(query)
 
     def get_relevant_documents(self, query: str):
@@ -39,10 +42,8 @@ class GatedRetriever:
             
         return relevant_docs
 
-
 def get_retriever():
     return GatedRetriever()
-
 
 def retrieve_documents(query: str, score_threshold: float = 0.35):
     retriever = GatedRetriever(score_threshold=score_threshold)
