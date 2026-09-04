@@ -1,0 +1,86 @@
+[2026-09-04 20:35:06] [INFO] [supportpearlz:7] - Initializing offline ingestion pipeline...
+[2026-09-04 20:35:06] [INFO] [supportpearlz:116] - Scanning directory data\knowledge_base. Found 0 files/folders.
+[2026-09-04 20:35:06] [INFO] [supportpearlz:127] - Total loaded base document passages: 0
+[2026-09-04 20:35:06] [ERROR] [supportpearlz:12] - No valid documents found in data/knowledge_base. Aborting index build.
+[2026-09-04 20:37:29] [INFO] [supportpearlz:7] - Initializing offline ingestion pipeline...
+[2026-09-04 20:37:29] [INFO] [supportpearlz:116] - Scanning directory data\knowledge_base. Found 4 files/folders.
+[2026-09-04 20:37:30] [WARNING] [supportpearlz:125] - Failed or skipped: pricing.csv
+[2026-09-04 20:37:30] [ERROR] [supportpearlz:105] - Error loading document product_manual.pdf: Cannot read an empty file
+[2026-09-04 20:37:30] [WARNING] [supportpearlz:125] - Failed or skipped: product_manual.pdf
+[2026-09-04 20:37:30] [ERROR] [supportpearlz:105] - Error loading document troubleshooting_guide.docx: name 'UnstructuredWordDocumentFileLoader' is not defined
+[2026-09-04 20:37:30] [WARNING] [supportpearlz:125] - Failed or skipped: troubleshooting_guide.docx
+[2026-09-04 20:37:30] [WARNING] [supportpearlz:125] - Failed or skipped: warranty_policy.md
+[2026-09-04 20:37:30] [INFO] [supportpearlz:127] - Total loaded base document passages: 0
+[2026-09-04 20:37:30] [ERROR] [supportpearlz:12] - No valid documents found in data/knowledge_base. Aborting index build.
+[2026-09-04 20:40:40] [INFO] [supportpearlz:7] - Initializing offline ingestion pipeline...
+[2026-09-04 20:40:40] [INFO] [supportpearlz:131] - Scanning directory data\knowledge_base. Found 4 files/folders.
+[2026-09-04 20:40:40] [WARNING] [supportpearlz:144] - Failed or skipped: pricing.csv
+[2026-09-04 20:40:40] [ERROR] [supportpearlz:120] - Error loading document product_manual.pdf: Cannot read an empty file
+[2026-09-04 20:40:40] [WARNING] [supportpearlz:144] - Failed or skipped: product_manual.pdf
+[2026-09-04 20:40:40] [ERROR] [supportpearlz:120] - Error loading document troubleshooting_guide.docx: No module named 'docx2txt'
+[2026-09-04 20:40:40] [WARNING] [supportpearlz:144] - Failed or skipped: troubleshooting_guide.docx
+[2026-09-04 20:40:40] [WARNING] [supportpearlz:144] - Failed or skipped: warranty_policy.md
+[2026-09-04 20:40:40] [INFO] [supportpearlz:146] - Total loaded base document passages: 0
+[2026-09-04 20:40:40] [ERROR] [supportpearlz:12] - No valid documents found in data/knowledge_base. Aborting index build.
+[2026-09-04 20:42:58] [INFO] [supportpearlz:7] - Initializing offline ingestion pipeline...
+[2026-09-04 20:42:58] [INFO] [supportpearlz:131] - Scanning directory data\knowledge_base. Found 4 files/folders.
+[2026-09-04 20:42:58] [INFO] [supportpearlz:140] - Successfully loaded 2 records from pricing.csv
+[2026-09-04 20:42:59] [INFO] [supportpearlz:140] - Successfully loaded 1 records from product_manual.pdf
+[2026-09-04 20:42:59] [INFO] [supportpearlz:140] - Successfully loaded 1 records from troubleshooting_guide.docx
+[2026-09-04 20:42:59] [INFO] [supportpearlz:140] - Successfully loaded 1 records from warranty_policy.md
+[2026-09-04 20:42:59] [INFO] [supportpearlz:146] - Total loaded base document passages: 5
+[2026-09-04 20:42:59] [INFO] [supportpearlz:30] - Transformed 5 document objects into 5 chunk vectors.
+[2026-09-04 20:43:00] [INFO] [supportpearlz:42] - Removing existing vector store at data\vector_store
+[2026-09-04 20:43:00] [INFO] [supportpearlz:46] - Embedding 5 document chunks using text-embedding-3-small...
+[2026-09-04 20:43:05] [INFO] [supportpearlz:56] - Vector database persisted successfully to data\vector_store
+[2026-09-04 20:43:05] [INFO] [supportpearlz:20] - Ingestion pipeline finished successfully. Index updated and persisted to disk.
+[2026-09-04 20:44:01] [INFO] [supportpearlz:14] - Executing retrieval for query: 'ahmad'
+[2026-09-04 20:44:03] [WARNING] [supportpearlz:25] - Relevance Gate Triggered: No retrieved chunks met score threshold (0.35).
+[2026-09-04 20:50:05] [INFO] [supportpearlz:15] - Initializing offline ingestion pipeline...
+[2026-09-04 20:50:05] [INFO] [supportpearlz:11] - Scanning directory data/knowledge_base. Found files/folders.
+[2026-09-04 20:50:05] [INFO] [supportpearlz:31] - Successfully loaded 2 records from pricing.csv
+[2026-09-04 20:50:05] [INFO] [supportpearlz:40] - Successfully loaded 1 records from product_manual.pdf
+[2026-09-04 20:50:05] [INFO] [supportpearlz:49] - Successfully loaded 1 records from troubleshooting_guide.docx
+[2026-09-04 20:50:08] [ERROR] [supportpearlz:61] - Error loading document warranty_policy.md: No module named 'markdown'
+[2026-09-04 20:50:08] [INFO] [supportpearlz:63] - Total loaded base document passages: 4
+[2026-09-04 20:50:08] [INFO] [supportpearlz:23] - Loaded document chunks/pages into vector index.
+[2026-09-04 20:50:10] [INFO] [supportpearlz:33] - Embedding document chunks using text-embedding-3-small...
+[2026-09-04 20:50:15] [INFO] [supportpearlz:42] - Vector database persisted successfully to data/vector_store
+[2026-09-04 20:50:15] [INFO] [supportpearlz:43] - Ingestion pipeline finished successfully. Index updated and persisted to disk.
+[2026-09-04 20:51:02] [INFO] [supportpearlz:15] - Initializing offline ingestion pipeline...
+[2026-09-04 20:51:02] [INFO] [supportpearlz:11] - Scanning directory data/knowledge_base. Found files/folders.
+[2026-09-04 20:51:02] [INFO] [supportpearlz:31] - Successfully loaded 2 records from pricing.csv
+[2026-09-04 20:51:02] [INFO] [supportpearlz:40] - Successfully loaded 1 records from product_manual.pdf
+[2026-09-04 20:51:02] [INFO] [supportpearlz:49] - Successfully loaded 1 records from troubleshooting_guide.docx
+[2026-09-04 20:51:48] [INFO] [supportpearlz:58] - Successfully loaded 1 records from warranty_policy.md
+[2026-09-04 20:51:48] [INFO] [supportpearlz:63] - Total loaded base document passages: 5
+[2026-09-04 20:51:48] [INFO] [supportpearlz:23] - Loaded document chunks/pages into vector index.
+[2026-09-04 20:51:48] [INFO] [supportpearlz:27] - Removing existing vector store at data/vector_store
+[2026-09-04 20:51:50] [INFO] [supportpearlz:33] - Embedding document chunks using text-embedding-3-small...
+[2026-09-04 20:51:55] [INFO] [supportpearlz:42] - Vector database persisted successfully to data/vector_store
+[2026-09-04 20:51:55] [INFO] [supportpearlz:43] - Ingestion pipeline finished successfully. Index updated and persisted to disk.
+[2026-09-04 20:52:20] [ERROR] [supportpearlz:47] - Unhandled REPL Error: 'GatedRetriever' object has no attribute 'retrieve'
+[2026-09-04 20:54:56] [INFO] [supportpearlz:15] - Initializing offline ingestion pipeline...
+[2026-09-04 20:54:56] [INFO] [supportpearlz:11] - Scanning directory data/knowledge_base. Found files/folders.
+[2026-09-04 20:54:56] [INFO] [supportpearlz:31] - Successfully loaded 2 records from pricing.csv
+[2026-09-04 20:54:56] [INFO] [supportpearlz:40] - Successfully loaded 1 records from product_manual.pdf
+[2026-09-04 20:54:56] [INFO] [supportpearlz:49] - Successfully loaded 1 records from troubleshooting_guide.docx
+[2026-09-04 20:55:05] [INFO] [supportpearlz:58] - Successfully loaded 1 records from warranty_policy.md
+[2026-09-04 20:55:05] [INFO] [supportpearlz:63] - Total loaded base document passages: 5
+[2026-09-04 20:55:05] [INFO] [supportpearlz:23] - Loaded document chunks/pages into vector index.
+[2026-09-04 20:55:05] [INFO] [supportpearlz:27] - Removing existing vector store at data/vector_store
+[2026-09-04 20:55:07] [INFO] [supportpearlz:33] - Embedding document chunks using text-embedding-3-small...
+[2026-09-04 20:55:11] [INFO] [supportpearlz:42] - Vector database persisted successfully to data/vector_store
+[2026-09-04 20:55:11] [INFO] [supportpearlz:43] - Ingestion pipeline finished successfully. Index updated and persisted to disk.
+[2026-09-04 20:56:38] [INFO] [supportpearlz:15] - Initializing offline ingestion pipeline...
+[2026-09-04 20:56:38] [INFO] [supportpearlz:11] - Scanning directory data/knowledge_base. Found files/folders.
+[2026-09-04 20:56:38] [INFO] [supportpearlz:31] - Successfully loaded 2 records from pricing.csv
+[2026-09-04 20:56:38] [INFO] [supportpearlz:40] - Successfully loaded 1 records from product_manual.pdf
+[2026-09-04 20:56:38] [INFO] [supportpearlz:49] - Successfully loaded 1 records from troubleshooting_guide.docx
+[2026-09-04 20:56:45] [INFO] [supportpearlz:58] - Successfully loaded 1 records from warranty_policy.md
+[2026-09-04 20:56:45] [INFO] [supportpearlz:63] - Total loaded base document passages: 5
+[2026-09-04 20:56:45] [INFO] [supportpearlz:23] - Loaded document chunks/pages into vector index.
+[2026-09-04 20:56:45] [INFO] [supportpearlz:27] - Removing existing vector store at data/vector_store
+[2026-09-04 20:56:46] [INFO] [supportpearlz:33] - Embedding document chunks using text-embedding-3-small...
+[2026-09-04 20:56:51] [INFO] [supportpearlz:42] - Vector database persisted successfully to data/vector_store
+[2026-09-04 20:56:51] [INFO] [supportpearlz:43] - Ingestion pipeline finished successfully. Index updated and persisted to disk.
