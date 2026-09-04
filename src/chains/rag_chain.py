@@ -1,78 +1,56 @@
-from typing import List, Tuple, Dict, Any
-from langchain_openai import ChatOpenAI
-from langchain_core.documents import Document
-from langchain_core.output_parsers import StrOutputParser
-
-from src.config import settings
-from src.retrieval.retriever import GatedRetriever
-from src.chains.schemas import GroundedResponse
-from src.chains.prompts import QA_PROMPT, CONDENSE_QUESTION_PROMPT
+import os
+from langchain_community.vectorstores import Chroma
+from langchain_openai import OpenAIEmbeddings
 from src.utils.logging_setup import logger
 
-class SupportPearlzRAGChain:
-    def __init__(self):
-        self.retriever = GatedRetriever()
-        self.llm = ChatOpenAI(
-            model=settings.llm_model,
-            temperature=settings.llm_temperature,
-            openai_api_key=settings.openai_api_key
+VECTOR_STORE_DIR = "data/vector_store"
+COLLECTION_NAME = "supportpearlz_docs"
+
+class GatedRetriever:
+    def __init__(self, score_threshold: float = 0.35, k: int = 3):
+        self.score_threshold = score_threshold
+        self.k = k
+        self.embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+        self.vector_store = Chroma(
+            collection_name=COLLECTION_NAME,
+            embedding_function=self.embeddings,
+            persist_directory=VECTOR_STORE_DIR,
+            collection_metadata={"hnsw:space": "cosine"}
         )
-        self.structured_llm = self.llm.with_structured_output(GroundedResponse)
 
-    def condense_query(self, question: str, chat_history: List[Any]) -> str:
-        if not chat_history:
-            return question
+    def invoke(self, query: str):
+        docs, _ = self.retrieve(query)
+        return docs
 
-        condense_chain = CONDENSE_QUESTION_PROMPT | self.llm | StrOutputParser()
-        rewritten = condense_chain.invoke({"chat_history": chat_history, "question": question})
-        logger.info(f"Query Condensation: Original='{question}' -> Rewritten='{rewritten}'")
-        return rewritten.strip()
-
-    def format_context(self, docs: List[Document]) -> str:
-        formatted_blocks = []
-        for idx, doc in enumerate(docs, start=1):
-            source = doc.metadata.get("source", "Unknown")
-            location = ""
-            if "page" in doc.metadata:
-                location = f" p.{doc.metadata['page']}"
-            elif "row" in doc.metadata:
-                location = f" Row {doc.metadata['row']}"
-            elif "location" in doc.metadata:
-                location = f" {doc.metadata['location']}"
-
-            label = f"[S{idx}] {source}{location}"
-            formatted_blocks.append(f"{label}:\n{doc.page_content}")
-        return "\n\n".join(formatted_blocks)
-
-    def run(self, question: str, chat_history: List[Any] = None) -> GroundedResponse:
-        chat_history = chat_history or []
+    def retrieve(self, query: str) -> tuple:
+        """Retrieves documents and returns a tuple: (docs, passed_boolean) to satisfy the RAG chain."""
+        logger.info(f"Executing retrieval for query: '{query}'")
         
-        standalone_query = self.condense_query(question, chat_history)
-        retrieved_docs, passed = self.retriever.retrieve(standalone_query)
-
-        if not passed or not retrieved_docs:
-            return GroundedResponse(
-                answer="I could not find relevant information in the official Pearlz Home Systems documentation regarding your request. Please reach out to customer support at support@pearlzhome.example for assistance.",
-                sources=[],
-                confidence="none",
-                answered=False
-            )
-
-        context_str = self.format_context(retrieved_docs)
+        results_with_scores = self.vector_store.similarity_search_with_relevance_scores(
+            query, k=self.k
+        )
         
-        try:
-            formatted_prompt = QA_PROMPT.format_prompt(
-                context=context_str,
-                chat_history=chat_history,
-                question=question
+        relevant_docs = [
+            doc for doc, score in results_with_scores if score >= self.score_threshold
+        ]
+        
+        passed = len(relevant_docs) > 0
+        
+        if not passed:
+            logger.warning(
+                f"Relevance Gate Triggered: No retrieved chunks met score threshold ({self.score_threshold})."
             )
-            response: GroundedResponse = self.structured_llm.invoke(formatted_prompt)
-            return response
-        except Exception as e:
-            logger.error(f"Execution or Parsing failure in RAG chain: {str(e)}")
-            return GroundedResponse(
-                answer="An error occurred while parsing the response from our systems. Please contact support.",
-                sources=[],
-                confidence="none",
-                answered=False
-            )
+            
+        return relevant_docs, passed
+
+    def get_relevant_documents(self, query: str):
+        docs, _ = self.retrieve(query)
+        return docs
+
+def get_retriever():
+    return GatedRetriever()
+
+def retrieve_documents(query: str, score_threshold: float = 0.35):
+    retriever = GatedRetriever(score_threshold=score_threshold)
+    docs, _ = retriever.retrieve(query)
+    return docs
