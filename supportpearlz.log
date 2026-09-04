@@ -84,3 +84,34 @@
 [2026-09-04 20:56:46] [INFO] [supportpearlz:33] - Embedding document chunks using text-embedding-3-small...
 [2026-09-04 20:56:51] [INFO] [supportpearlz:42] - Vector database persisted successfully to data/vector_store
 [2026-09-04 20:56:51] [INFO] [supportpearlz:43] - Ingestion pipeline finished successfully. Index updated and persisted to disk.
+[2026-09-04 23:09:29] [INFO] [supportpearlz:28] - Executing retrieval for query: 'Who are u ?'
+[2026-09-04 23:10:45] [INFO] [supportpearlz:28] - Executing retrieval for query: 'Who are u?'
+[2026-09-04 23:10:49] [WARNING] [supportpearlz:39] - Relevance Gate Triggered: No retrieved chunks met score threshold (0.35).
+[2026-09-04 23:11:37] [INFO] [supportpearlz:28] - Executing retrieval for query: 'who are u ?'
+[2026-09-04 23:11:39] [WARNING] [supportpearlz:39] - Relevance Gate Triggered: No retrieved chunks met score threshold (0.35).
+[2026-09-04 23:15:53] [INFO] [supportpearlz:15] - Initializing offline ingestion pipeline...
+[2026-09-04 23:15:53] [INFO] [supportpearlz:11] - Scanning directory data/knowledge_base. Found files/folders.
+[2026-09-04 23:15:53] [INFO] [supportpearlz:31] - Successfully loaded 2 records from pricing.csv
+[2026-09-04 23:15:53] [INFO] [supportpearlz:40] - Successfully loaded 1 records from product_manual.pdf
+[2026-09-04 23:15:53] [INFO] [supportpearlz:49] - Successfully loaded 1 records from troubleshooting_guide.docx
+[2026-09-04 23:15:59] [INFO] [supportpearlz:58] - Successfully loaded 1 records from warranty_policy.md
+[2026-09-04 23:15:59] [INFO] [supportpearlz:63] - Total loaded base document passages: 5
+[2026-09-04 23:15:59] [INFO] [supportpearlz:23] - Loaded document chunks/pages into vector index.
+[2026-09-04 23:15:59] [INFO] [supportpearlz:27] - Removing existing vector store at data/vector_store
+[2026-09-04 23:16:01] [INFO] [supportpearlz:33] - Embedding document chunks using text-embedding-3-small...
+[2026-09-04 23:16:06] [INFO] [supportpearlz:42] - Vector database persisted successfully to data/vector_store
+[2026-09-04 23:16:06] [INFO] [supportpearlz:43] - Ingestion pipeline finished successfully. Index updated and persisted to disk.
+[2026-09-04 23:16:41] [INFO] [supportpearlz:28] - Executing retrieval for query: 'who are u?'
+[2026-09-04 23:16:42] [WARNING] [supportpearlz:39] - Relevance Gate Triggered: No retrieved chunks met score threshold (0.35).
+[2026-09-04 23:20:28] [INFO] [supportpearlz:15] - Initializing offline ingestion pipeline...
+[2026-09-04 23:20:28] [INFO] [supportpearlz:11] - Scanning directory data/knowledge_base. Found files/folders.
+[2026-09-04 23:20:28] [INFO] [supportpearlz:31] - Successfully loaded 2 records from pricing.csv
+[2026-09-04 23:20:28] [INFO] [supportpearlz:40] - Successfully loaded 1 records from product_manual.pdf
+[2026-09-04 23:20:28] [INFO] [supportpearlz:49] - Successfully loaded 1 records from troubleshooting_guide.docx
+[2026-09-04 23:20:33] [INFO] [supportpearlz:58] - Successfully loaded 1 records from warranty_policy.md
+[2026-09-04 23:20:33] [INFO] [supportpearlz:63] - Total loaded base document passages: 5
+[2026-09-04 23:20:33] [INFO] [supportpearlz:23] - Loaded document chunks/pages into vector index.
+[2026-09-04 23:20:33] [INFO] [supportpearlz:27] - Removing existing vector store at data/vector_store
+[2026-09-04 23:20:35] [INFO] [supportpearlz:33] - Embedding document chunks using text-embedding-3-small...
+[2026-09-04 23:20:40] [INFO] [supportpearlz:42] - Vector database persisted successfully to data/vector_store
+[2026-09-04 23:20:40] [INFO] [supportpearlz:43] - Ingestion pipeline finished successfully. Index updated and persisted to disk.
