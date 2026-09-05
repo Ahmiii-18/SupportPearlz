@@ -1,3 +1,10 @@
+import os
+import streamlit as st
+from src.ingestion.build_index import build_vector_index
+
+# Automatically build vector database on startup if missing or empty
+if not os.path.exists("data/vector_store") or not os.listdir("data/vector_store"):
+    build_vector_index()
 import streamlit as st
 from src.chains.rag_chain import get_rag_chain
 
