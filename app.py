@@ -26,17 +26,39 @@ if "chain" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+# Sidebar Controls and Suggested Questions
+clicked_question = None
 with st.sidebar:
     st.header("Controls")
-    if st.button("Reset Chat Memory"):
+    if st.button("Reset Chat Memory", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
 
+    st.markdown("---")
+    st.header("💡 Suggested Questions")
+    
+    suggested_queries = [
+        "What is covered under the Pearlz warranty policy?",
+        "What are the available plans and prices?",
+        "How do I install my Pearlz Home System?",
+        "What steps should I follow if my device stops responding?",
+        "Who are you and what do you do?"
+    ]
+    
+    for q in suggested_queries:
+        if st.button(q, key=f"btn_{q}", use_container_width=True):
+            clicked_question = q
+
+# Display chat history
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.write(msg["content"])
 
-if user_input := st.chat_input("How can I help you with your Pearlz Home Systems product today?"):
+# Capture input from text prompt or sidebar button click
+chat_input_value = st.chat_input("How can I help you with your Pearlz Home Systems product today?")
+user_input = clicked_question or chat_input_value
+
+if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})
     with st.chat_message("user"):
         st.write(user_input)
@@ -49,3 +71,5 @@ if user_input := st.chat_input("How can I help you with your Pearlz Home Systems
                 st.caption(f"Sources: {', '.join(response.sources)} | Confidence: {response.confidence}")
 
     st.session_state.messages.append({"role": "assistant", "content": response.answer})
+    if clicked_question:
+        st.rerun()
