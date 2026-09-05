@@ -27,20 +27,29 @@ class GatedRetriever:
     def get_relevant_documents(self, query: str):
         logger.info(f"Executing retrieval for query: '{query}'")
         
-        results_with_scores = self.vector_store.similarity_search_with_relevance_scores(
+        # Use similarity_search_with_score to get distance metrics (0.0 = exact match)
+        results_with_scores = self.vector_store.similarity_search_with_score(
             query, k=self.k
         )
         
-        relevant_docs = [
-            doc for doc, score in results_with_scores if score >= self.score_threshold
-        ]
+        relevant_docs = []
+        for doc, distance in results_with_scores:
+            # Convert cosine distance to similarity score (1.0 - distance)
+            similarity_score = 1.0 - distance
+            logger.info(f"Chunk score - Distance: {distance:.4f}, Similarity: {similarity_score:.4f}")
+            
+            if similarity_score >= self.score_threshold:
+                relevant_docs.append(doc)
         
         if not relevant_docs:
             logger.warning(
                 f"Relevance Gate Triggered: No retrieved chunks met score threshold ({self.score_threshold})."
             )
+            # Return an empty list AND False so unpacking works safely in the chain
+            return [], False 
             
-        return relevant_docs
+        # Return the documents list AND True indicating the gate passed successfully
+        return relevant_docs, True
 
 def get_retriever():
     return GatedRetriever()

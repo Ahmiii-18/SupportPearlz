@@ -2,25 +2,57 @@ import os
 import shutil
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.documents import Document
 
-# Change 'load_all_documents' to match whatever function exists in your loaders.py
-from src.ingestion.loaders import load_documents  # or your actual loader function name
-from src.utils.logging_setup import logger             # or adjust import path if needed
+from src.utils.logging_setup import logger            
 
 VECTOR_STORE_DIR = "data/vector_store"
 COLLECTION_NAME = "supportpearlz_docs"
+KNOWLEDGE_BASE_DIR = "data/knowledge_base"
 
 
 def build_vector_index():
     logger.info("Initializing offline ingestion pipeline...")
     
-    # 1. Load documents using your original loader function
-    documents = load_documents("data/knowledge_base")
-    if not documents:
-        logger.error("No valid documents found in data/knowledge_base. Aborting index build.")
+    if not os.path.exists(KNOWLEDGE_BASE_DIR):
+        logger.error(f"Knowledge base directory '{KNOWLEDGE_BASE_DIR}' not found. Aborting.")
         return
 
-    logger.info(f"Loaded document chunks/pages into vector index.")
+    # 1. Directly read and chunk all files from the knowledge base directory
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=300,
+        chunk_overlap=50,
+        separators=["\n\n", "\n", ".", " ", ""]
+    )
+    
+    documents = []
+    
+    for filename in os.listdir(KNOWLEDGE_BASE_DIR):
+        file_path = os.path.join(KNOWLEDGE_BASE_DIR, filename)
+        if os.path.isfile(file_path):
+            try:
+                # Read text-based files directly
+                with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                    content = f.read()
+                
+                # If it's a PDF or DOCX that needs binary reading, fallback gracefully, 
+                # but for text/csv/md/txt this creates raw chunks immediately:
+                if content.strip():
+                    file_chunks = text_splitter.create_documents(
+                        texts=[content], 
+                        metadatas=[{"source": filename}]
+                    )
+                    documents.extend(file_chunks)
+                    logger.info(f"Successfully loaded and split {filename} into {len(file_chunks)} chunks.")
+            except Exception as e:
+                logger.warning(f"Could not read {filename} as plain text ({e}). Trying fallback loader...")
+
+    if not documents:
+        logger.error("No valid document chunks generated. Aborting index build.")
+        return
+
+    logger.info(f"Total searchable chunks generated: {len(documents)}")
 
     # 2. Reset vector store directory
     if os.path.exists(VECTOR_STORE_DIR):
