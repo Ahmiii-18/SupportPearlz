@@ -5,7 +5,6 @@ from langchain_community.document_loaders import (
     CSVLoader,
     PyPDFLoader,
     Docx2txtLoader,
-    UnstructuredMarkdownLoader,
     TextLoader
 )
 from src.utils.logging_setup import logger
@@ -36,10 +35,8 @@ def load_documents(directory_path: str) -> List[Document]:
             elif ext in [".docx", ".doc"]:
                 loader = Docx2txtLoader(file_path)
                 loaded_docs = loader.load()
-            elif ext in [".md", ".markdown"]:
-                loader = UnstructuredMarkdownLoader(file_path)
-                loaded_docs = loader.load()
-            elif ext == ".txt":
+            elif ext in [".md", ".markdown", ".txt"]:
+                # Use lightweight TextLoader to avoid C-binary dependencies on Cloud
                 loader = TextLoader(file_path, encoding="utf-8")
                 loaded_docs = loader.load()
 
