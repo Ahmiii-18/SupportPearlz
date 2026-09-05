@@ -231,3 +231,7 @@
 [2026-09-05 17:02:33] [INFO] [supportpearlz:65] - Embedding document chunks using text-embedding-3-small...
 [2026-09-05 17:02:38] [INFO] [supportpearlz:74] - Vector database persisted successfully to data/vector_store
 [2026-09-05 17:02:38] [INFO] [supportpearlz:75] - Ingestion pipeline finished successfully. Index updated and persisted to disk.
+[2026-09-05 17:03:51] [INFO] [supportpearlz:28] - Executing retrieval for query: 'What are the pricing tiers or subscription plans available for Pearlz Home Systems products?'
+[2026-09-05 17:03:52] [INFO] [supportpearlz:39] - Chunk score - Distance: 0.4738, Similarity: 0.5262
+[2026-09-05 17:03:52] [INFO] [supportpearlz:39] - Chunk score - Distance: 0.5667, Similarity: 0.4333
+[2026-09-05 17:03:52] [INFO] [supportpearlz:39] - Chunk score - Distance: 0.8050, Similarity: 0.1950

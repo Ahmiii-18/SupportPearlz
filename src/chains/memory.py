@@ -1,25 +1,9 @@
-from typing import List
-from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
+from langchain_community.chat_message_histories import ChatMessageHistory
+from langchain_core.chat_history import BaseChatMessageHistory
 
-class ChatSessionMemory:
-    def __init__(self, max_turns: int = 5):
-        self.max_turns = max_turns
-        self.history: List[BaseMessage] = []
+store = {}
 
-    def add_user_message(self, message: str):
-        self.history.append(HumanMessage(content=message))
-        self._trim_history()
-
-    def add_ai_message(self, message: str):
-        self.history.append(AIMessage(content=message))
-        self._trim_history()
-
-    def get_messages(self) -> List[BaseMessage]:
-        return self.history
-
-    def clear(self):
-        self.history.clear()
-
-    def _trim_history(self):
-        if len(self.history) > self.max_turns * 2:
-            self.history = self.history[-(self.max_turns * 2):]
+def get_session_history(session_id: str) -> BaseChatMessageHistory:
+    if session_id not in store:
+        store[session_id] = ChatMessageHistory()
+    return store[session_id]

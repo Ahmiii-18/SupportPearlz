@@ -1,20 +1,15 @@
-from typing import List, Literal
+from typing import List
 from pydantic import BaseModel, Field
 
-class GroundedResponse(BaseModel):
+class AgentResponse(BaseModel):
     answer: str = Field(
-        ..., 
-        description="Direct answer to the user's inquiry based strictly on the provided context."
+        description="The detailed response to provide to the user based on context."
     )
     sources: List[str] = Field(
         default_factory=list, 
-        description="List of document citations explicitly utilized (e.g. ['warranty_policy.md §3.2', 'product_manual.pdf p.14'])."
+        description="List of document source names utilized to construct the answer."
     )
-    confidence: Literal["high", "partial", "none"] = Field(
-        ..., 
-        description="Self-evaluated accuracy confidence based strictly on context availability."
-    )
-    answered: bool = Field(
-        ..., 
-        description="Set to True if query was answered from context; False if refused/unanswerable."
+    confidence: str = Field(
+        default="High", 
+        description="Confidence level of the response: 'High', 'Medium', or 'Low'."
     )

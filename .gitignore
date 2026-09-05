@@ -1,6 +1,10 @@
 venv/
-.env
+.venv/
 __pycache__/
-.streamlit/
+*.pyc
 data/vector_store/
+.env
+.streamlit/secrets.toml
 .DS_Store
+.vscode/
+evaluation/results/

@@ -1,78 +1,42 @@
-from typing import List, Tuple, Dict, Any
 from langchain_openai import ChatOpenAI
-from langchain_core.documents import Document
-from langchain_core.output_parsers import StrOutputParser
-
-from src.config import settings
-from src.retrieval.retriever import GatedRetriever
-from src.chains.schemas import GroundedResponse
-from src.chains.prompts import QA_PROMPT, CONDENSE_QUESTION_PROMPT
+from src.chains.prompts import RAG_PROMPT
+from src.chains.schemas import AgentResponse
+from src.retrieval.retriever import get_retriever
 from src.utils.logging_setup import logger
 
-class SupportPearlzRAGChain:
+class SupportPearlzChain:
     def __init__(self):
-        self.retriever = GatedRetriever()
-        self.llm = ChatOpenAI(
-            model=settings.llm_model,
-            temperature=settings.llm_temperature,
-            openai_api_key=settings.openai_api_key
-        )
-        self.structured_llm = self.llm.with_structured_output(GroundedResponse)
+        self.retriever = get_retriever()
+        self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.0)
+        self.structured_llm = self.llm.with_structured_output(AgentResponse)
+        self.prompt = RAG_PROMPT
 
-    def condense_query(self, question: str, chat_history: List[Any]) -> str:
-        if not chat_history:
-            return question
+    def invoke(self, question: str) -> AgentResponse:
+        # 1. Retrieve relevant passages via GatedRetriever
+        docs, gate_passed = self.retriever.get_relevant_documents(question)
 
-        condense_chain = CONDENSE_QUESTION_PROMPT | self.llm | StrOutputParser()
-        rewritten = condense_chain.invoke({"chat_history": chat_history, "question": question})
-        logger.info(f"Query Condensation: Original='{question}' -> Rewritten='{rewritten}'")
-        return rewritten.strip()
-
-    def format_context(self, docs: List[Document]) -> str:
-        formatted_blocks = []
-        for idx, doc in enumerate(docs, start=1):
-            source = doc.metadata.get("source", "Unknown")
-            location = ""
-            if "page" in doc.metadata:
-                location = f" p.{doc.metadata['page']}"
-            elif "row" in doc.metadata:
-                location = f" Row {doc.metadata['row']}"
-            elif "location" in doc.metadata:
-                location = f" {doc.metadata['location']}"
-
-            label = f"[S{idx}] {source}{location}"
-            formatted_blocks.append(f"{label}:\n{doc.page_content}")
-        return "\n\n".join(formatted_blocks)
-
-    def run(self, question: str, chat_history: List[Any] = None) -> GroundedResponse:
-        chat_history = chat_history or []
-        
-        standalone_query = self.condense_query(question, chat_history)
-        retrieved_docs, passed = self.retriever.retrieve(standalone_query)
-
-        if not passed or not retrieved_docs:
-            return GroundedResponse(
+        # 2. Check gated retrieval status
+        if not gate_passed or not docs:
+            logger.info(f"Relevance gate blocked retrieval for query: '{question}'")
+            return AgentResponse(
                 answer="I could not find relevant information in the official Pearlz Home Systems documentation regarding your request. Please reach out to customer support at support@pearlzhome.example for assistance.",
                 sources=[],
-                confidence="none",
-                answered=False
+                confidence="Low"
             )
 
-        context_str = self.format_context(retrieved_docs)
-        
-        try:
-            formatted_prompt = QA_PROMPT.format_prompt(
-                context=context_str,
-                chat_history=chat_history,
-                question=question
-            )
-            response: GroundedResponse = self.structured_llm.invoke(formatted_prompt)
-            return response
-        except Exception as e:
-            logger.error(f"Execution or Parsing failure in RAG chain: {str(e)}")
-            return GroundedResponse(
-                answer="An error occurred while parsing the response from our systems. Please contact support.",
-                sources=[],
-                confidence="none",
-                answered=False
-            )
+        # 3. Aggregate text context and unique source metadata
+        context_text = "\n\n".join([doc.page_content for doc in docs])
+        retrieved_sources = list(set([doc.metadata.get("source", "Unknown") for doc in docs if doc.metadata]))
+
+        # 4. Generate structured Pydantic response
+        formatted_prompt = self.prompt.format_messages(context=context_text, question=question)
+        response = self.structured_llm.invoke(formatted_prompt)
+
+        # Attach source metadata if unpopulated by LLM
+        if not response.sources and retrieved_sources:
+            response.sources = retrieved_sources
+
+        return response
+
+def get_rag_chain():
+    return SupportPearlzChain()
