@@ -2,6 +2,7 @@
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://supportpearlz-ai.streamlit.app/)
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
+[![Built with Streamlit](https://img.shields.io/badge/Streamlit-1.63%2B-FF4B4B.svg?logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **SupportPearlz AI** is an intelligent, RAG-based customer support agent designed to deliver accurate, fully grounded answers from official company documentation while eliminating hallucinations.
