@@ -4,6 +4,7 @@ from src.chains.schemas import AgentResponse
 from src.retrieval.retriever import get_retriever
 from src.utils.logging_setup import logger
 
+
 class SupportPearlzChain:
     def __init__(self):
         self.retriever = get_retriever()
@@ -15,28 +16,27 @@ class SupportPearlzChain:
         # 1. Retrieve relevant passages via GatedRetriever
         docs, gate_passed = self.retriever.get_relevant_documents(question)
 
-        # 2. Check gated retrieval status
+        # 2. Build context based on retrieval status
         if not gate_passed or not docs:
-            logger.info(f"Relevance gate blocked retrieval for query: '{question}'")
-            return AgentResponse(
-                answer="I could not find relevant information in the official Pearlz Home Systems documentation regarding your request. Please reach out to customer support at support@pearlzhome.example for assistance.",
-                sources=[],
-                confidence="Low"
+            logger.info(f"Relevance gate blocked retrieval or no docs found for query: '{question}'")
+            context_text = "No relevant internal documentation found."
+            retrieved_sources = []
+        else:
+            context_text = "\n\n".join([doc.page_content for doc in docs])
+            retrieved_sources = list(
+                set([doc.metadata.get("source", "Unknown") for doc in docs if doc.metadata])
             )
 
-        # 3. Aggregate text context and unique source metadata
-        context_text = "\n\n".join([doc.page_content for doc in docs])
-        retrieved_sources = list(set([doc.metadata.get("source", "Unknown") for doc in docs if doc.metadata]))
-
-        # 4. Generate structured Pydantic response
+        # 3. Generate structured Pydantic response (handles greetings or fallback via system prompt)
         formatted_prompt = self.prompt.format_messages(context=context_text, question=question)
         response = self.structured_llm.invoke(formatted_prompt)
 
-        # Attach source metadata if unpopulated by LLM
+        # 4. Attach source metadata if unpopulated by LLM
         if not response.sources and retrieved_sources:
             response.sources = retrieved_sources
 
         return response
+
 
 def get_rag_chain():
     return SupportPearlzChain()
