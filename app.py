@@ -8,10 +8,13 @@ if "OPENAI_API_KEY" in st.secrets:
 from src.ingestion.build_index import build_vector_index
 from src.chains.rag_chain import get_rag_chain
 
-# Automatically build vector database on startup if missing
-if not os.path.exists("data/vector_store") or not os.listdir("data/vector_store"):
-    with st.spinner("Initializing knowledge base index..."):
-        build_vector_index()
+# Force clean vector index initialization on application startup
+@st.cache_resource(show_spinner="Initializing knowledge base index...")
+def init_vector_store():
+    build_vector_index()
+    return True
+
+init_vector_store()
 
 st.set_page_config(page_title="SupportPearlz Customer Support", page_icon="🛡️")
 st.title("🛡️ SupportPearlz Customer Support Agent")
